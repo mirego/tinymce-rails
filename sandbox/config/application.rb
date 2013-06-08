@@ -4,7 +4,7 @@ require File.expand_path('../boot', __FILE__)
 #  require "active_record/railtie"
 require "action_controller/railtie"
 require "action_mailer/railtie"
-require "active_resource/railtie"
+# require "active_resource/railtie"
 require "sprockets/railtie"
 require "rails/test_unit/railtie"
 
@@ -48,6 +48,7 @@ module Sandbox
 
     # Precompile application assets
     config.assets.precompile += %w(tinymce-standalone.js tinymce-with-jquery.js)
-    config.assets.precompile << "tinymce/*/es{,_dlg}.js"
+    config.assets.precompile << "tinymce/**/es.js"
+    config.assets.precompile << "tinymce/**/es_dlg.js"
   end
 end
