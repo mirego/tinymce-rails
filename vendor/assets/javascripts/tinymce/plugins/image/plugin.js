@@ -1,1 +1,157 @@
-tinymce.PluginManager.add("image",function(e){function t(t){return function(){var n=e.settings.image_list;"string"==typeof n?tinymce.util.XHR.send({url:n,success:function(e){t(tinymce.util.JSON.parse(e))}}):t(n)}}function n(t){function n(){var e=[{text:"None",value:""}];return tinymce.each(t,function(t){e.push({text:t.text||t.title,value:t.value||t.url,menu:t.menu})}),e}function i(e){var t,n,i,o;t=l.find("#width")[0],n=l.find("#height")[0],i=t.value(),o=n.value(),l.find("#constrain")[0].checked()&&c&&u&&i&&o&&(e.control==t?(o=Math.round(i/c*o),n.value(o)):(i=Math.round(o/u*i),t.value(i))),c=i,u=o}function o(){function t(t){t.onload=t.onerror=function(){t.onload=t.onerror=null,e.selection.select(t),e.nodeChanged()}}var n=l.toJSON();""===n.width&&(n.width=null),""===n.height&&(n.height=null),""===n.style&&(n.style=null),n={src:n.src,alt:n.alt,width:n.width,height:n.height,style:n.style},g?m.setAttribs(g,n):(n.id="__mcenew",e.insertContent(m.createHTML("img",n)),g=m.get("__mcenew"),m.setAttrib(g,"id",null)),t(g)}function a(e){return e&&(e=e.replace(/px$/,"")),e}function r(){function e(e){return e.length>0&&/^[0-9]+$/.test(e)&&(e+="px"),e}var t=l.toJSON(),n=m.parseStyle(t.style);delete n.margin,n["margin-top"]=n["margin-bottom"]=e(t.vspace),n["margin-left"]=n["margin-right"]=e(t.hspace),n["border-width"]=e(t.border),l.find("#style").value(m.serializeStyle(m.parseStyle(m.serializeStyle(n))))}var l,s,c,u,d,m=e.dom,g=e.selection.getNode();c=m.getAttrib(g,"width"),u=m.getAttrib(g,"height"),"IMG"!=g.nodeName||g.getAttribute("data-mce-object")?g=null:s={src:m.getAttrib(g,"src"),alt:m.getAttrib(g,"alt"),width:c,height:u},t&&(d={name:"target",type:"listbox",label:"Image list",values:n(),onselect:function(e){var t=l.find("#alt");(!t.value()||e.lastControl&&t.value()==e.lastControl.text())&&t.value(e.control.text()),l.find("#src").value(e.control.value())}});var f=[{name:"src",type:"filepicker",filetype:"image",label:"Source",autofocus:!0},d,{name:"alt",type:"textbox",label:"Image description"},{type:"container",label:"Dimensions",layout:"flex",direction:"row",align:"center",spacing:5,items:[{name:"width",type:"textbox",maxLength:3,size:3,onchange:i},{type:"label",text:"x"},{name:"height",type:"textbox",maxLength:3,size:3,onchange:i},{name:"constrain",type:"checkbox",checked:!0,text:"Constrain proportions"}]}];e.settings.image_advtab?(g&&(s.hspace=a(g.style.marginLeft||g.style.marginRight),s.vspace=a(g.style.marginTop||g.style.marginBottom),s.border=a(g.style.borderWidth),s.style=e.dom.serializeStyle(e.dom.parseStyle(e.dom.getAttrib(g,"style")))),l=e.windowManager.open({title:"Edit image",data:s,bodyType:"tabpanel",body:[{title:"General",type:"form",items:f},{title:"Advanced",type:"form",pack:"start",items:[{label:"Style",name:"style",type:"textbox"},{type:"form",layout:"grid",packV:"start",columns:2,padding:0,alignH:["left","right"],defaults:{type:"textbox",maxWidth:50,onchange:r},items:[{label:"Vertical space",name:"vspace"},{label:"Horizontal space",name:"hspace"},{label:"Border",name:"border"}]}]}],onSubmit:o})):l=e.windowManager.open({title:"Edit image",data:s,body:f,onSubmit:o})}e.addButton("image",{icon:"image",tooltip:"Insert/edit image",onclick:t(n),stateSelector:"img:not([data-mce-object])"}),e.addMenuItem("image",{icon:"image",text:"Insert image",onclick:t(n),context:"insert",prependToContext:!0})});
+/**
+ * plugin.js
+ *
+ * Copyright, Moxiecode Systems AB
+ * Released under LGPL License.
+ *
+ * License: http://www.tinymce.com/license
+ * Contributing: http://www.tinymce.com/contributing
+ */
+
+/*global tinymce:true */
+
+
+tinymce.PluginManager.add('image', function (editor) {
+    function showDialog() {
+        var win;
+
+        function startUploadImage() {
+            console.log('Submitting form');
+            $fileuploadContainer.trigger('startUpload');
+        }
+
+        // Simple default dialog
+        win = editor.windowManager.open({
+            title: 'Edit image',
+            name: 'cb-image-upload',
+            buttons: [
+                {text: 'Ok', subtype: 'primary', onclick: function () {
+                    startUploadImage();
+                }},
+                {text: 'Cancel', onclick: function () {
+                    win.close();
+                }}
+            ],
+            width: 300,
+            height: 200
+        });
+
+        win.addClass('cb-picture-uploader-container');
+
+        var $fileuploadContainer = $('#' + win._id + '-body');
+        $fileuploadContainer.append('<div class="cb-picture-uploader">' +
+            '<form>' +
+            '<div class="files">' +
+            '<div class="fileupload-preview">' +
+            '</div>' +
+            '</div>' +
+            '<div class="fileupload-selectfile mce-btn">' +
+            '<button>Select File</button>' +
+            '<input type="file" class="hidden" name="file" />' +
+            '</div>' +
+            '</form>' +
+            '<div class="progress progress-striped active" style="display:none"><div class="bar"></div></div>' +
+            '</div>');
+
+        // Unhide the input type file if on IE <= 9
+        if ($.browser.msie && $.browser.version <= 9) {
+            $fileuploadContainer.find("input[type=file]").removeClass("hidden");
+        }
+
+        $fileuploadContainer.fileupload({
+            dataType: 'json',
+            url: editor.settings.uploadimage_form_url,
+            previewMaxHeight: 100,
+            formData: {
+                authenticity_token: $('meta[name="csrf-token"]').attr('content')
+            },
+            previewMaxWidth: 300,
+            type: 'POST',
+            replaceFileInput: false,
+            dropZone: $fileuploadContainer,
+            add: function (e, data) {
+                console.log(e);
+                console.log(data);
+
+                $fileuploadContainer.unbind("startUpload");
+
+                var that = $(this).data('blueimp-fileupload') ||
+                        $(this).data('fileupload'),
+                    options = that.options,
+                    files = data.files;
+                $(this).fileupload('process', data).done(function () {
+                    that._adjustMaxNumberOfFiles(-files.length);
+                    data.maxNumberOfFilesAdjusted = true;
+                    data.files.valid = data.isValidated = that._validate(files);
+
+                    if (!($.browser.msie && $.browser.version <= 9)) {
+                        $fileuploadContainer.find(".files").empty();
+                    }
+
+                    data.context = that._renderUpload(files).data('data', data);
+                    options.filesContainer[
+                        options.prependFiles ? 'prepend' : 'append'
+                        ](data.context);
+                    that._renderPreviews(data);
+                    that._forceReflow(data.context);
+                    that._transition(data.context).done(
+                        function () {
+                            if ((that._trigger('added', e, data) !== false) &&
+                                (options.autoUpload || data.autoUpload) &&
+                                data.autoUpload !== false && data.isValidated) {
+                                data.submit();
+                            }
+                        }
+                    );
+
+                    $fileuploadContainer.bind("startUpload", function () {
+                        console.log(data);
+                        data.submit();
+                    })
+                });
+            },
+            uploadTemplate: function (o) {
+                return $('<div class="fileupload-preview"><div class="preview"><span></span></div></div>');
+            },
+            send: function (e, data) {
+                $fileuploadContainer.find('.progress').fadeIn();
+            },
+            progress: function (e, data) {
+                // This is what makes everything really cool, thanks to that callback
+                // you can now update the progress bar based on the upload progress
+                var percent = Math.round((e.loaded / e.total) * 100)
+                $fileuploadContainer.find('.bar').css('width', percent + '%')
+            },
+            done: function (e, data) {
+                console.log('Done!');
+                console.log(data.result);
+            },
+            fail: function (e, data) {
+                console.log('fail');
+            }
+        });
+
+        if (!($.browser.msie && $.browser.version <= 9)) {
+            $fileuploadContainer.find(".fileupload-selectfile.mce-btn button").click(function (e) {
+                $fileuploadContainer.find(":file").click();
+                e.preventDefault();
+                return false;
+            });
+        }
+    }
+
+    editor.addButton('image', {
+        icon: 'image',
+        tooltip: 'Insert/edit image',
+        onclick: showDialog,
+        stateSelector: 'img:not([data-mce-object])'
+    });
+
+    editor.addMenuItem('image', {
+        icon: 'image',
+        text: 'Insert image',
+        onclick: showDialog,
+        context: 'insert',
+        prependToContext: true
+    });
+});
