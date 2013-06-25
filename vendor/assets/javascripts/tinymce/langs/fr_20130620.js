@@ -155,5 +155,15 @@ tinymce.addI18n('fr_20130620',{
 "Format": "Format",
 "Insert horizontal ruler": "Ligne horizontale",
 "Paragraph": "Paragraphe",
-"Header 1": "Titre 1"
+"Header 1": "Titre 1",
+"Header 2": "Titre 2",
+"Header 3": "Titre 3",
+"Header 4": "Titre 4",
+"Header 5": "Titre 5",
+"Header 6": "Titre 6",
+"Code": "Code",
+"Address": "Adresse",
+"Pre": "Préformatté",
+"Click or drag an image here": "Cliquer ou glisser une image ici",
+"Change": "Changer"
 });

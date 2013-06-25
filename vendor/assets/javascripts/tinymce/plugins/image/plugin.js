@@ -45,10 +45,11 @@ tinymce.PluginManager.add('image', function (editor) {
             '</div>' +
             '</div>' +
             '<div class="fileupload-uploadzone">' +
-            '<div class="fileupload-uploadhint">Click or drag an image here</div>' +
+            '<div class="fileupload-uploadhint">' + editor.editorManager.translate('Click or drag an image here') + '</div>' +
             '</div>' +
             '<input type="file" class="hidden" name="file" />' +
             '</form>' +
+            '<div class="fileupload-changefile" style="display:none">' + editor.editorManager.translate('Change') + '</div>' +
             '<div class="progress progress-striped active" style="display:none"><div class="bar"></div></div>' +
             '</div>');
 
@@ -60,15 +61,17 @@ tinymce.PluginManager.add('image', function (editor) {
         $fileuploadContainer.fileupload({
             dataType: 'json',
             url: editor.settings.uploadimage_form_url,
-            previewMaxHeight: 100,
+            previewMaxHeight: 140,
             formData: {
                 authenticity_token: $('meta[name="csrf-token"]').attr('content')
             },
-            previewMaxWidth: 300,
+            previewMaxWidth: 350,
             type: 'POST',
             replaceFileInput: false,
-            dropZone: $fileuploadContainer.find('fileupload-uploadzone'),
+            dropZone: $fileuploadContainer.find('.fileupload-uploadzone'),
             add: function (e, data) {
+                $fileuploadContainer.find(".fileupload-uploadzone").hide();
+                $fileuploadContainer.find('.fileupload-changefile').show();
                 $fileuploadContainer.unbind("startUpload");
 
                 var that = $(this).data('blueimp-fileupload') ||
@@ -101,8 +104,9 @@ tinymce.PluginManager.add('image', function (editor) {
                     );
 
                     $fileuploadContainer.bind("startUpload", function () {
+                        $fileuploadContainer.find('.fileupload-changefile').hide();
                         data.submit();
-                    })
+                    });
                 });
             },
             uploadTemplate: function (o) {
@@ -118,7 +122,6 @@ tinymce.PluginManager.add('image', function (editor) {
                 $fileuploadContainer.find('.bar').css('width', percent + '%')
             },
             done: function (e, data) {
-                console.log(data.result);
                 if (data.result.image) {
                     var imgSettings = {
                         src: data.result.image.url,
@@ -135,11 +138,18 @@ tinymce.PluginManager.add('image', function (editor) {
             },
             fail: function (e, data) {
                 console.log('fail');
+            },
+            previewdone: function(e, data) {
+                var $preview = $fileuploadContainer.find(".preview");
+                var height = $preview.height();
+                var width = $preview.width();
+
+                $preview.css({marginTop: (90 - height/2) + 'px', marginLeft: (200 - width/2) + 'px'});
             }
         });
 
         if (!($.browser.msie && $.browser.version <= 9)) {
-            $fileuploadContainer.find(".fileupload-uploadzone").click(function (e) {
+            $fileuploadContainer.find(".fileupload-uploadzone, .fileupload-changefile").click(function (e) {
                 $fileuploadContainer.find(":file").click();
                 e.preventDefault();
                 return false;
@@ -149,7 +159,7 @@ tinymce.PluginManager.add('image', function (editor) {
 
     editor.addButton('image', {
         icon: 'image',
-        tooltip: 'Insert/edit image',
+        tooltip: 'Insert image',
         onclick: showDialog,
         stateSelector: 'img:not([data-mce-object])'
     });
