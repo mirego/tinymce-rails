@@ -73,7 +73,7 @@ tinymce.PluginManager.add('cbimage', function (editor) {
             dropZone: $fileuploadContainer.find('.fileupload-uploadzone'),
             add: function (e, data) {
                 $fileuploadContainer.find(".fileupload-uploadzone").hide();
-                if ($.browser.msie && $.browser.version <= 9) {
+                if (!($.browser.msie && $.browser.version <= 9)) {
                     $fileuploadContainer.find('.fileupload-changefile').show();
                 }
 
@@ -141,7 +141,7 @@ tinymce.PluginManager.add('cbimage', function (editor) {
                     $fileuploadContainer.find('.fileupload-error').text(data.result.error.message).show();
                     $fileuploadContainer.find('.fileupload-preview, .fileupload-changefile, .progress').hide();
                     $fileuploadContainer.find('.bar').css('width', 0);
-                    if ($.browser.msie && $.browser.version <= 9) {
+                    if (!($.browser.msie && $.browser.version <= 9)) {
                         $fileuploadContainer.find('.fileupload-uploadzone').show();
                     }
                 }
@@ -150,7 +150,7 @@ tinymce.PluginManager.add('cbimage', function (editor) {
                 $fileuploadContainer.find('.fileupload-error').text(editor.editorManager.translate('An error occurred while uploading the image.')).show();
                 $fileuploadContainer.find('.fileupload-preview, .fileupload-changefile, .progress').hide();
                 $fileuploadContainer.find('.bar').css('width', 0);
-                if ($.browser.msie && $.browser.version <= 9) {
+                if (!($.browser.msie && $.browser.version <= 9)) {
                     $fileuploadContainer.find('.fileupload-uploadzone').show();
                 }
             },
