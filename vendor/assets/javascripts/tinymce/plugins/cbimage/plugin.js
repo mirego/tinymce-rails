@@ -11,7 +11,7 @@
 /*global tinymce:true */
 
 
-tinymce.PluginManager.add('image', function (editor) {
+tinymce.PluginManager.add('cbimage', function (editor) {
     function showDialog() {
         var win;
 
