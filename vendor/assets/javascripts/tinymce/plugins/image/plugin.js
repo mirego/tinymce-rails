@@ -51,6 +51,7 @@ tinymce.PluginManager.add('image', function (editor) {
             '</form>' +
             '<div class="fileupload-changefile" style="display:none">' + editor.editorManager.translate('Change') + '</div>' +
             '<div class="progress progress-striped active" style="display:none"><div class="bar"></div></div>' +
+            '<div class="fileupload-error" style="display:none"></div>' +
             '</div>');
 
         // Unhide the input type file if on IE <= 9
@@ -133,11 +134,17 @@ tinymce.PluginManager.add('image', function (editor) {
                     win.close();
                 }
                 else {
-                    console.log('error');
+                    $fileuploadContainer.find('.fileupload-error').text(data.result.error.message).show();
+                    $fileuploadContainer.find('.fileupload-preview, .fileupload-changefile, .progress').hide();
+                    $fileuploadContainer.find('.bar').css('width', 0);
+                    $fileuploadContainer.find('.fileupload-uploadzone').show();
                 }
             },
             fail: function (e, data) {
-                console.log('fail');
+                $fileuploadContainer.find('.fileupload-error').text(editor.editorManager.translate('An error occurred while uploading the image.')).show();
+                $fileuploadContainer.find('.fileupload-preview, .fileupload-changefile, .progress').hide();
+                $fileuploadContainer.find('.bar').css('width', 0);
+                $fileuploadContainer.find('.fileupload-uploadzone').show();
             },
             previewdone: function(e, data) {
                 var $preview = $fileuploadContainer.find(".preview");
@@ -150,6 +157,7 @@ tinymce.PluginManager.add('image', function (editor) {
 
         if (!($.browser.msie && $.browser.version <= 9)) {
             $fileuploadContainer.find(".fileupload-uploadzone, .fileupload-changefile").click(function (e) {
+                $fileuploadContainer.find('.fileupload-error').hide();
                 $fileuploadContainer.find(":file").click();
                 e.preventDefault();
                 return false;
