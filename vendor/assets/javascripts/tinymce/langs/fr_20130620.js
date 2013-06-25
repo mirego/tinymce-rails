@@ -55,7 +55,7 @@ tinymce.addI18n('fr_20130620',{
 "Fullscreen": "Plein \u00e9cran",
 "Horizontal line": "Ligne horizontale",
 "Horizontal space": "Espacement horizontal",
-"Insert\/edit image": "Ins\u00e9rer\/\u00e9diter une image",
+"Insert image": "Ins\u00e9rer une image",
 "General": "G\u00e9n\u00e9ral",
 "Advanced": "Avanc\u00e9",
 "Source": "Source",

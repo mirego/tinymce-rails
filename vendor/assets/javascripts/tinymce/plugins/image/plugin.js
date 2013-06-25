@@ -16,13 +16,12 @@ tinymce.PluginManager.add('image', function (editor) {
         var win;
 
         function startUploadImage() {
-            console.log('Submitting form');
             $fileuploadContainer.trigger('startUpload');
         }
 
         // Simple default dialog
         win = editor.windowManager.open({
-            title: 'Edit image',
+            title: 'Insert image',
             name: 'cb-image-upload',
             buttons: [
                 {text: 'Ok', subtype: 'primary', onclick: function () {
@@ -32,7 +31,7 @@ tinymce.PluginManager.add('image', function (editor) {
                     win.close();
                 }}
             ],
-            width: 300,
+            width: 400,
             height: 200
         });
 
@@ -45,10 +44,10 @@ tinymce.PluginManager.add('image', function (editor) {
             '<div class="fileupload-preview">' +
             '</div>' +
             '</div>' +
-            '<div class="fileupload-selectfile mce-btn">' +
-            '<button>Select File</button>' +
-            '<input type="file" class="hidden" name="file" />' +
+            '<div class="fileupload-uploadzone">' +
+            '<div class="fileupload-uploadhint">Click or drag an image here</div>' +
             '</div>' +
+            '<input type="file" class="hidden" name="file" />' +
             '</form>' +
             '<div class="progress progress-striped active" style="display:none"><div class="bar"></div></div>' +
             '</div>');
@@ -68,11 +67,8 @@ tinymce.PluginManager.add('image', function (editor) {
             previewMaxWidth: 300,
             type: 'POST',
             replaceFileInput: false,
-            dropZone: $fileuploadContainer,
+            dropZone: $fileuploadContainer.find('fileupload-uploadzone'),
             add: function (e, data) {
-                console.log(e);
-                console.log(data);
-
                 $fileuploadContainer.unbind("startUpload");
 
                 var that = $(this).data('blueimp-fileupload') ||
@@ -105,7 +101,6 @@ tinymce.PluginManager.add('image', function (editor) {
                     );
 
                     $fileuploadContainer.bind("startUpload", function () {
-                        console.log(data);
                         data.submit();
                     })
                 });
@@ -123,8 +118,20 @@ tinymce.PluginManager.add('image', function (editor) {
                 $fileuploadContainer.find('.bar').css('width', percent + '%')
             },
             done: function (e, data) {
-                console.log('Done!');
                 console.log(data.result);
+                if (data.result.image) {
+                    var imgSettings = {
+                        src: data.result.image.url,
+                        width: data.result.image.width,
+                        height: data.result.image.height
+                    };
+
+                    editor.insertContent(editor.dom.createHTML('img', imgSettings));
+                    win.close();
+                }
+                else {
+                    console.log('error');
+                }
             },
             fail: function (e, data) {
                 console.log('fail');
@@ -132,7 +139,7 @@ tinymce.PluginManager.add('image', function (editor) {
         });
 
         if (!($.browser.msie && $.browser.version <= 9)) {
-            $fileuploadContainer.find(".fileupload-selectfile.mce-btn button").click(function (e) {
+            $fileuploadContainer.find(".fileupload-uploadzone").click(function (e) {
                 $fileuploadContainer.find(":file").click();
                 e.preventDefault();
                 return false;
