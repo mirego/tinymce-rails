@@ -57,6 +57,7 @@ tinymce.PluginManager.add('cbimage', function (editor) {
         // Unhide the input type file if on IE <= 9
         if ($.browser.msie && $.browser.version <= 9) {
             $fileuploadContainer.find("input[type=file]").removeClass("hidden");
+            $fileuploadContainer.find('.fileupload-uploadzone').hide();
         }
 
         $fileuploadContainer.fileupload({
@@ -72,7 +73,10 @@ tinymce.PluginManager.add('cbimage', function (editor) {
             dropZone: $fileuploadContainer.find('.fileupload-uploadzone'),
             add: function (e, data) {
                 $fileuploadContainer.find(".fileupload-uploadzone").hide();
-                $fileuploadContainer.find('.fileupload-changefile').show();
+                if ($.browser.msie && $.browser.version <= 9) {
+                    $fileuploadContainer.find('.fileupload-changefile').show();
+                }
+
                 $fileuploadContainer.unbind("startUpload");
 
                 var that = $(this).data('blueimp-fileupload') ||
@@ -137,14 +141,18 @@ tinymce.PluginManager.add('cbimage', function (editor) {
                     $fileuploadContainer.find('.fileupload-error').text(data.result.error.message).show();
                     $fileuploadContainer.find('.fileupload-preview, .fileupload-changefile, .progress').hide();
                     $fileuploadContainer.find('.bar').css('width', 0);
-                    $fileuploadContainer.find('.fileupload-uploadzone').show();
+                    if ($.browser.msie && $.browser.version <= 9) {
+                        $fileuploadContainer.find('.fileupload-uploadzone').show();
+                    }
                 }
             },
             fail: function (e, data) {
                 $fileuploadContainer.find('.fileupload-error').text(editor.editorManager.translate('An error occurred while uploading the image.')).show();
                 $fileuploadContainer.find('.fileupload-preview, .fileupload-changefile, .progress').hide();
                 $fileuploadContainer.find('.bar').css('width', 0);
-                $fileuploadContainer.find('.fileupload-uploadzone').show();
+                if ($.browser.msie && $.browser.version <= 9) {
+                    $fileuploadContainer.find('.fileupload-uploadzone').show();
+                }
             },
             previewdone: function(e, data) {
                 var $preview = $fileuploadContainer.find(".preview");
