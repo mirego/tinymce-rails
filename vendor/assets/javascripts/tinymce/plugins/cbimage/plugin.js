@@ -123,7 +123,7 @@ tinymce.PluginManager.add('cbimage', function (editor) {
             progress: function (e, data) {
                 // This is what makes everything really cool, thanks to that callback
                 // you can now update the progress bar based on the upload progress
-                var percent = Math.round((e.loaded / e.total) * 100)
+                var percent = Math.round((data.loaded / data.total) * 100)
                 $fileuploadContainer.find('.bar').css('width', percent + '%')
             },
             done: function (e, data) {
