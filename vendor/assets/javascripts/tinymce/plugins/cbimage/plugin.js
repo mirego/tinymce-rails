@@ -84,9 +84,9 @@ tinymce.PluginManager.add('cbimage', function (editor) {
                     options = that.options,
                     files = data.files;
                 $(this).fileupload('process', data).done(function () {
-                    that._adjustMaxNumberOfFiles(-files.length);
-                    data.maxNumberOfFilesAdjusted = true;
-                    data.files.valid = data.isValidated = that._validate(files);
+                    // that._adjustMaxNumberOfFiles(-files.length);
+                    // data.maxNumberOfFilesAdjusted = true;
+                    // data.files.valid = data.isValidated = that._validate(files);
 
                     if (!($.browser.msie && $.browser.version <= 9)) {
                         $fileuploadContainer.find(".files").empty();
