@@ -63,11 +63,12 @@ tinymce.PluginManager.add('cbimage', function (editor) {
         $fileuploadContainer.fileupload({
             dataType: 'json',
             url: editor.settings.uploadimage_form_url,
-            previewMaxHeight: 140,
             formData: {
                 authenticity_token: $('meta[name="csrf-token"]').attr('content')
             },
+            previewMaxHeight: 140,
             previewMaxWidth: 350,
+            previewThumbnail: false,
             type: 'POST',
             replaceFileInput: false,
             dropZone: $fileuploadContainer.find('.fileupload-uploadzone'),
