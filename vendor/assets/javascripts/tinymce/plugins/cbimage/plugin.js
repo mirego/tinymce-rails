@@ -114,6 +114,7 @@ tinymce.PluginManager.add('cbimage', function (editor) {
                         data.submit();
                     });
                 });
+                $fileuploadContainer = $(this);
             },
             uploadTemplate: function (o) {
                 return $('<div class="fileupload-preview"><div class="preview"><span></span></div></div>');
