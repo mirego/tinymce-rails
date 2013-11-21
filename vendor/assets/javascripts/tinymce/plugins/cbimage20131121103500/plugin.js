@@ -11,7 +11,7 @@
 /*global tinymce:true */
 
 
-tinymce.PluginManager.add('cbimage', function (editor) {
+tinymce.PluginManager.add('cbimage20131121103500', function (editor) {
     function showDialog() {
         var win;
 
