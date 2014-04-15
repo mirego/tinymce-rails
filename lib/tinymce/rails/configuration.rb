@@ -3,7 +3,7 @@ require "active_support/hash_with_indifferent_access"
 module TinyMCE::Rails
   class Configuration
     class Function < String
-      def encode_json(encoder)
+      def to_javascript
         self
       end
     end
@@ -46,20 +46,22 @@ module TinyMCE::Rails
       result
     end
     
-    def merge(options)
-      self.class.new(self.options.merge(options))
+    def to_javascript
+      pairs = options_for_tinymce.inject([]) do |result, (k, v)|
+        if v.respond_to?(:to_javascript)
+          v = v.to_javascript
+        elsif v.respond_to?(:to_json)
+          v = v.to_json
+        end
+        
+        result << [k, v].join(": ")
+      end
+      
+      "{\n#{pairs.join(",\n")}\n}"
     end
     
-    def self.load(filename)
-      return new_with_defaults if !File.exists?(filename)
-      
-      options = load_yaml(filename)
-      
-      if options.has_key?('default')
-        MultipleConfiguration.new(options)
-      else
-        new_with_defaults(options)
-      end
+    def merge(options)
+      self.class.new(self.options.merge(options))
     end
     
     # Default language falls back to English if current locale is not available.
@@ -80,10 +82,6 @@ module TinyMCE::Rails
   
     def self.assets
       Rails.application.assets
-    end
-    
-    def self.load_yaml(filename)
-      YAML::load(ERB.new(IO.read(filename)).result)
     end
   end
   

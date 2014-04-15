@@ -3,11 +3,13 @@ require 'spec_helper'
 module TinyMCE
   describe Rails do
     describe ".configuration" do
-      let(:configuration_file) { ::Rails.root.join("config/tinymce.yml") }
-      let(:configuration) { stub }
+      let(:path) { ::Rails.root.join("config/tinymce.yml") }
+      
+      let(:configuration_file) { double(:configuration => configuration) }
+      let(:configuration) { double }
       
       it "loads the tinymce.yml config file" do
-        TinyMCE::Rails::Configuration.should_receive(:load).with(configuration_file).and_return(configuration)
+        TinyMCE::Rails::ConfigurationFile.should_receive(:new).with(path).and_return(configuration_file)
         TinyMCE::Rails.configuration.should eq(configuration)
       end
     end
