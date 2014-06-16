@@ -175,7 +175,7 @@ tinymce.PluginManager.add('cbimage20140616103500', function (editor) {
         }
 
         if (value && value.files && value.files.length > 0) {
-            $fileuploadContainer.fileupload('add', value.files);
+            $fileuploadContainer.fileupload('add', {files: value.files});
         }
     }
 
