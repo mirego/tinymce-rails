@@ -11,8 +11,8 @@
 /*global tinymce:true */
 
 
-tinymce.PluginManager.add('cbimage20131121103500', function (editor) {
-    function showDialog() {
+tinymce.PluginManager.add('cbimage20140616103500', function (editor) {
+    function showDialog(ui, value) {
         var win;
 
         function startUploadImage() {
@@ -173,6 +173,10 @@ tinymce.PluginManager.add('cbimage20131121103500', function (editor) {
                 return false;
             });
         }
+
+        if (value && value.files && value.files.length > 0) {
+            $fileuploadContainer.fileupload('add', value.files);
+        }
     }
 
     editor.addButton('image', {
@@ -189,4 +193,6 @@ tinymce.PluginManager.add('cbimage20131121103500', function (editor) {
         context: 'insert',
         prependToContext: true
     });
+
+    editor.addCommand('DropImage', showDialog);
 });
