@@ -38,6 +38,7 @@ tinymce.addI18n('fr_20130620',{
 "Lower Roman": "Romain minuscule",
 "Name": "Nom",
 "Anchor": "Ancre",
+"Anchors": "Ancres",
 "You have unsaved changes are you sure you want to navigate away?": "Vous avez des modifications non enregistr\u00e9es, \u00eates-vous s\u00fbr de quitter la page?",
 "Restore last draft": "Restaurer le dernier brouillon",
 "Special character": "Caract\u00e8res sp\u00e9ciaux",
