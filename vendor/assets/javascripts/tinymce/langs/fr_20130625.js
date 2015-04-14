@@ -167,5 +167,6 @@ tinymce.addI18n('fr_20130620',{
 "Pre": "Préformatté",
 "Click or drag an image here": "Cliquer ou glisser une image ici",
 "Change": "Changer",
-"An error occurred while uploading the image.": "Une erreur est survenue durant le téléversement de l'image."
+"An error occurred while uploading the image.": "Une erreur est survenue durant le téléversement de l'image.",
+"Label": "Libell\u00e9"
 });
