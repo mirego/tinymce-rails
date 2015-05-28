@@ -1,1 +1,685 @@
-tinymce.PluginManager.add("media",function(e,t){function i(e){return-1!=e.indexOf(".mp3")?"audio/mpeg":-1!=e.indexOf(".wav")?"audio/wav":-1!=e.indexOf(".mp4")?"video/mp4":-1!=e.indexOf(".webm")?"video/webm":-1!=e.indexOf(".ogg")?"video/ogg":-1!=e.indexOf(".swf")?"application/x-shockwave-flash":""}function r(t){var i=e.settings.media_scripts;if(i)for(var r=0;r<i.length;r++)if(-1!==t.indexOf(i[r].filter))return i[r]}function a(){function t(e){var t,o,c,n;t=i.find("#width")[0],o=i.find("#height")[0],c=t.value(),n=o.value(),i.find("#constrain")[0].checked()&&r&&a&&c&&n&&(e.control==t?(n=Math.round(c/r*n),o.value(n)):(c=Math.round(n/a*c),t.value(c))),r=c,a=n}var i,r,a,m;m=s(e.selection.getNode()),r=m.width,a=m.height,i=e.windowManager.open({title:"Insert/edit video",data:m,bodyType:"tabpanel",body:[{title:"General",type:"form",onShowTab:function(){m=n(this.next().find("#embed").value()),this.fromJSON(m)},items:[{name:"source1",type:"filepicker",filetype:"media",size:40,autofocus:!0,label:"Source"},{name:"source2",type:"filepicker",filetype:"media",size:40,label:"Alternative source"},{name:"poster",type:"filepicker",filetype:"image",size:40,label:"Poster"},{type:"container",label:"Dimensions",layout:"flex",align:"center",spacing:5,items:[{name:"width",type:"textbox",maxLength:5,size:3,ariaLabel:"Width",onchange:t},{type:"label",text:"x"},{name:"height",type:"textbox",maxLength:5,size:3,ariaLabel:"Height",onchange:t},{name:"constrain",type:"checkbox",checked:!0,text:"Constrain proportions"}]}]},{title:"Embed",type:"panel",layout:"flex",direction:"column",align:"stretch",padding:10,spacing:10,onShowTab:function(){this.find("#embed").value(c(this.parent().toJSON()))},items:[{type:"label",text:"Paste your embed code below:",forId:"mcemediasource"},{id:"mcemediasource",type:"textbox",flex:1,name:"embed",value:o(),multiline:!0,label:"Source"}]}],onSubmit:function(){e.insertContent(c(this.toJSON()))}})}function o(){var t=e.selection.getNode();return t.getAttribute("data-mce-object")?e.selection.getContent():void 0}function c(a){var o="";if(!a.source1&&(tinymce.extend(a,n(a.embed)),!a.source1))return"";if(a.source1=e.convertURL(a.source1,"source"),a.source2=e.convertURL(a.source2,"source"),a.source1mime=i(a.source1),a.source2mime=i(a.source2),a.poster=e.convertURL(a.poster,"poster"),a.flashPlayerUrl=e.convertURL(t+"/moxieplayer.swf","movie"),a.embed)o=m(a.embed,a,!0);else{tinymce.each(d,function(e){var t,i,r;if(t=e.regex.exec(a.source1)){for(r=e.url,i=0;t[i];i++)r=r.replace("$"+i,function(){return t[i]});a.source1=r,a.type=e.type,a.width=a.width||e.w,a.height=a.height||e.h}});var c=r(a.source1);c&&(a.type="script",a.width=c.width,a.height=c.height),a.width=a.width||300,a.height=a.height||150,tinymce.each(a,function(t,i){a[i]=e.dom.encode(t)}),"iframe"==a.type?o+='<iframe src="'+a.source1+'" width="'+a.width+'" height="'+a.height+'"></iframe>':"application/x-shockwave-flash"==a.source1mime?(o+='<object data="'+a.source1+'" width="'+a.width+'" height="'+a.height+'" type="application/x-shockwave-flash">',a.poster&&(o+='<img src="'+a.poster+'" width="'+a.width+'" height="'+a.height+'" />'),o+="</object>"):-1!=a.source1mime.indexOf("audio")?e.settings.audio_template_callback?o=e.settings.audio_template_callback(a):o+='<audio controls="controls" src="'+a.source1+'">'+(a.source2?'\n<source src="'+a.source2+'"'+(a.source2mime?' type="'+a.source2mime+'"':"")+" />\n":"")+"</audio>":"script"==a.type?o+='<script src="'+a.source1+'"></script>':o=e.settings.video_template_callback?e.settings.video_template_callback(a):'<video width="'+a.width+'" height="'+a.height+'"'+(a.poster?' poster="'+a.poster+'"':"")+' controls="controls">\n<source src="'+a.source1+'"'+(a.source1mime?' type="'+a.source1mime+'"':"")+" />\n"+(a.source2?'<source src="'+a.source2+'"'+(a.source2mime?' type="'+a.source2mime+'"':"")+" />\n":"")+"</video>"}return o}function n(e){var t={};return new tinymce.html.SaxParser({validate:!1,allow_conditional_comments:!0,special:"script,noscript",start:function(e,i){if(t.source1||"param"!=e||(t.source1=i.map.movie),("iframe"==e||"object"==e||"embed"==e||"video"==e||"audio"==e)&&(t.type||(t.type=e),t=tinymce.extend(i.map,t)),"script"==e){var a=r(i.map.src);if(!a)return;t={type:"script",source1:i.map.src,width:a.width,height:a.height}}"source"==e&&(t.source1?t.source2||(t.source2=i.map.src):t.source1=i.map.src),"img"!=e||t.poster||(t.poster=i.map.src)}}).parse(e),t.source1=t.source1||t.src||t.data,t.source2=t.source2||"",t.poster=t.poster||"",t}function s(t){return t.getAttribute("data-mce-object")?n(e.serializer.serialize(t,{selection:!0})):{}}function m(e,t,i){function r(e,t){var i,r,a,o;for(i in t)if(a=""+t[i],e.map[i])for(r=e.length;r--;)o=e[r],o.name==i&&(a?(e.map[i]=a,o.value=a):(delete e.map[i],e.splice(r,1)));else a&&(e.push({name:i,value:a}),e.map[i]=a)}var a,o=new tinymce.html.Writer,c=0;return new tinymce.html.SaxParser({validate:!1,allow_conditional_comments:!0,special:"script,noscript",comment:function(e){o.comment(e)},cdata:function(e){o.cdata(e)},text:function(e,t){o.text(e,t)},start:function(e,n,s){switch(e){case"video":case"object":case"embed":case"img":case"iframe":r(n,{width:t.width,height:t.height})}if(i)switch(e){case"video":r(n,{poster:t.poster,src:""}),t.source2&&r(n,{src:""});break;case"iframe":r(n,{src:t.source1});break;case"source":if(c++,2>=c&&(r(n,{src:t["source"+c],type:t["source"+c+"mime"]}),!t["source"+c]))return;break;case"img":if(!t.poster)return;a=!0}o.start(e,n,s)},end:function(e){if("video"==e&&i)for(var n=1;2>=n;n++)if(t["source"+n]){var s=[];s.map={},n>c&&(r(s,{src:t["source"+n],type:t["source"+n+"mime"]}),o.start("source",s,!0))}if(t.poster&&"object"==e&&i&&!a){var m=[];m.map={},r(m,{src:t.poster,width:t.width,height:t.height}),o.start("img",m,!0)}o.end(e)}},new tinymce.html.Schema({})).parse(e),o.getContent()}var d=[{regex:/youtu\.be\/([a-z1-9.-_]+)/,type:"iframe",w:425,h:350,url:"http://www.youtube.com/embed/$1"},{regex:/youtube\.com(.+)v=([^&]+)/,type:"iframe",w:425,h:350,url:"http://www.youtube.com/embed/$2"},{regex:/vimeo\.com\/([0-9]+)/,type:"iframe",w:425,h:350,url:"http://player.vimeo.com/video/$1?title=0&byline=0&portrait=0&color=8dc7dc"},{regex:/maps\.google\.([a-z]{2,3})\/maps\/(.+)msid=(.+)/,type:"iframe",w:425,h:350,url:'http://maps.google.com/maps/ms?msid=$2&output=embed"'}];e.on("ResolveName",function(e){var t;1==e.target.nodeType&&(t=e.target.getAttribute("data-mce-object"))&&(e.name=t)}),e.on("preInit",function(){var t=e.schema.getSpecialElements();tinymce.each("video audio iframe object".split(" "),function(e){t[e]=new RegExp("</"+e+"[^>]*>","gi")}),e.schema.addValidElements("object[id|style|width|height|classid|codebase|*],embed[id|style|width|height|type|src|*],video[*],audio[*]");var i=e.schema.getBoolAttrs();tinymce.each("webkitallowfullscreen mozallowfullscreen allowfullscreen".split(" "),function(e){i[e]={}}),e.parser.addNodeFilter("iframe,video,audio,object,embed,script",function(t,i){for(var a,o,c,n,s,m,d,u,l=t.length;l--;)if(o=t[l],"script"!=o.name||(u=r(o.attr("src")))){for(c=new tinymce.html.Node("img",1),c.shortEnded=!0,u&&(u.width&&o.attr("width",u.width.toString()),u.height&&o.attr("height",u.height.toString())),m=o.attributes,a=m.length;a--;)n=m[a].name,s=m[a].value,"width"!==n&&"height"!==n&&"style"!==n&&(("data"==n||"src"==n)&&(s=e.convertURL(s,n)),c.attr("data-mce-p-"+n,s));d=o.firstChild&&o.firstChild.value,d&&(c.attr("data-mce-html",escape(d)),c.firstChild=null),c.attr({width:o.attr("width")||"300",height:o.attr("height")||("audio"==i?"30":"150"),style:o.attr("style"),src:tinymce.Env.transparentSrc,"data-mce-object":i,"class":"mce-object mce-object-"+i}),o.replace(c)}}),e.serializer.addAttributeFilter("data-mce-object",function(e,t){for(var i,r,a,o,c,n,s,m=e.length;m--;){for(i=e[m],s=i.attr(t),r=new tinymce.html.Node(s,1),"audio"!=s&&"script"!=s&&r.attr({width:i.attr("width"),height:i.attr("height")}),r.attr({style:i.attr("style")}),o=i.attributes,a=o.length;a--;){var d=o[a].name;0===d.indexOf("data-mce-p-")&&r.attr(d.substr(11),o[a].value)}"script"==s&&r.attr("type","text/javascript"),c=i.attr("data-mce-html"),c&&(n=new tinymce.html.Node("#text",3),n.raw=!0,n.value=unescape(c),r.append(n)),i.replace(r)}})}),e.on("ObjectSelected",function(e){var t=e.target.getAttribute("data-mce-object");("audio"==t||"script"==t)&&e.preventDefault()}),e.on("objectResized",function(e){var t,i=e.target;i.getAttribute("data-mce-object")&&(t=i.getAttribute("data-mce-html"),t&&(t=unescape(t),i.setAttribute("data-mce-html",escape(m(t,{width:e.width,height:e.height})))))}),e.addButton("media",{tooltip:"Insert/edit video",onclick:a,stateSelector:["img[data-mce-object=video]","img[data-mce-object=iframe]"]}),e.addMenuItem("media",{icon:"media",text:"Insert video",onclick:a,context:"insert",prependToContext:!0})});
+/**
+ * plugin.js
+ *
+ * Copyright, Moxiecode Systems AB
+ * Released under LGPL License.
+ *
+ * License: http://www.tinymce.com/license
+ * Contributing: http://www.tinymce.com/contributing
+ */
+
+/*jshint maxlen:255 */
+/*eslint max-len:0 */
+/*global tinymce:true */
+
+tinymce.PluginManager.add('media', function(editor, url) {
+  var urlPatterns = [
+    {regex: /youtu\.be\/([\w\-.]+)/, type: 'iframe', w: 425, h: 350, url: '//www.youtube.com/embed/$1'},
+    {regex: /youtube\.com(.+)v=([^&]+)/, type: 'iframe', w: 425, h: 350, url: '//www.youtube.com/embed/$2'},
+    {regex: /vimeo\.com\/([0-9]+)/, type: 'iframe', w: 425, h: 350, url: '//player.vimeo.com/video/$1?title=0&byline=0&portrait=0&color=8dc7dc'},
+    {regex: /maps\.google\.([a-z]{2,3})\/maps\/(.+)msid=(.+)/, type: 'iframe', w: 425, h: 350, url: '//maps.google.com/maps/ms?msid=$2&output=embed"'}
+  ];
+
+  function guessMime(url) {
+    if (url.indexOf('.mp3') != -1) {
+      return 'audio/mpeg';
+    }
+
+    if (url.indexOf('.wav') != -1) {
+      return 'audio/wav';
+    }
+
+    if (url.indexOf('.mp4') != -1) {
+      return 'video/mp4';
+    }
+
+    if (url.indexOf('.webm') != -1) {
+      return 'video/webm';
+    }
+
+    if (url.indexOf('.ogg') != -1) {
+      return 'video/ogg';
+    }
+
+    if (url.indexOf('.swf') != -1) {
+      return 'application/x-shockwave-flash';
+    }
+
+    return '';
+  }
+
+  function getVideoScriptMatch(src) {
+    var prefixes = editor.settings.media_scripts;
+
+    if (prefixes) {
+      for (var i = 0; i < prefixes.length; i++) {
+        if (src.indexOf(prefixes[i].filter) !== -1) {
+          return prefixes[i];
+        }
+      }
+    }
+  }
+
+  function showDialog() {
+    var win, width, height, data;
+    var generalFormItems = [
+      {name: 'source1', type: 'filepicker', filetype: 'media', size: 40, autofocus: true, label: 'Source'}
+    ];
+
+    function recalcSize(e) {
+      var widthCtrl, heightCtrl, newWidth, newHeight;
+
+      widthCtrl = win.find('#width')[0];
+      heightCtrl = win.find('#height')[0];
+
+      newWidth = widthCtrl.value();
+      newHeight = heightCtrl.value();
+
+      if (win.find('#constrain')[0].checked() && width && height && newWidth && newHeight) {
+        if (e.control == widthCtrl) {
+          newHeight = Math.round((newWidth / width) * newHeight);
+          heightCtrl.value(newHeight);
+        } else {
+          newWidth = Math.round((newHeight / height) * newWidth);
+          widthCtrl.value(newWidth);
+        }
+      }
+
+      width = newWidth;
+      height = newHeight;
+    }
+
+    if (editor.settings.media_alt_source !== false) {
+      generalFormItems.push({name: 'source2', type: 'filepicker', filetype: 'media', size: 40, label: 'Alternative source'});
+    }
+
+    if (editor.settings.media_poster !== false) {
+      generalFormItems.push({name: 'poster', type: 'filepicker', filetype: 'image', size: 40, label: 'Poster'});
+    }
+
+    if (editor.settings.media_dimensions !== false) {
+      generalFormItems.push({
+        type: 'container',
+        label: 'Dimensions',
+        layout: 'flex',
+        align: 'center',
+        spacing: 5,
+        items: [
+          {name: 'width', type: 'textbox', maxLength: 3, size: 3, onchange: recalcSize},
+          {type: 'label', text: 'x'},
+          {name: 'height', type: 'textbox', maxLength: 3, size: 3, onchange: recalcSize},
+          {name: 'constrain', type: 'checkbox', checked: true, text: 'Constrain proportions'}
+        ]
+      });
+    }
+
+    data = getData(editor.selection.getNode());
+    width = data.width;
+    height = data.height;
+
+    win = editor.windowManager.open({
+      title: 'Insert/edit video',
+      data: data,
+      bodyType: 'tabpanel',
+      body: [
+        {
+          title: 'General',
+          type: "form",
+          onShowTab: function() {
+            var $placeholderElements = $('input.mce-placeholder');
+            $placeholderElements.attr('placeholder', 'https://www.youtube.com/watch?v=BacO75YwZaQ');
+            data = htmlToData(this.next().find('#embed').value());
+            this.fromJSON(data);
+          },
+          items: generalFormItems
+        },
+
+        {
+          title: 'Embed',
+          type: "panel",
+          layout: 'flex',
+          direction: 'column',
+          align: 'stretch',
+          padding: 10,
+          spacing: 10,
+          onShowTab: function() {
+            this.find('#embed').value(dataToHtml(this.parent().toJSON()));
+          },
+          items: [
+            {
+              type: 'label',
+              text: 'Paste your embed code below:',
+              forId: 'mcemediasource'
+            },
+            {
+              id: 'mcemediasource',
+              type: 'textbox',
+              flex: 1,
+              name: 'embed',
+              value: getSource(),
+              multiline: true,
+              label: 'Source'
+            }
+          ]
+        }
+      ],
+      onSubmit: function() {
+        editor.insertContent(dataToHtml(this.toJSON()));
+      }
+    });
+  }
+
+  function getSource() {
+    var elm = editor.selection.getNode();
+
+    if (elm.getAttribute('data-mce-object')) {
+      return editor.selection.getContent();
+    }
+  }
+
+  function dataToHtml(data) {
+    var html = '';
+
+    if (!data.source1) {
+      tinymce.extend(data, htmlToData(data.embed));
+      if (!data.source1) {
+        return '';
+      }
+    }
+
+    if (!data.source2) {
+      data.source2 = '';
+    }
+
+    if (!data.poster) {
+      data.poster = '';
+    }
+
+    data.source1 = editor.convertURL(data.source1, "source");
+    data.source2 = editor.convertURL(data.source2, "source");
+    data.source1mime = guessMime(data.source1);
+    data.source2mime = guessMime(data.source2);
+    data.poster = editor.convertURL(data.poster, "poster");
+    data.flashPlayerUrl = editor.convertURL(url + '/moxieplayer.swf', "movie");
+
+    tinymce.each(urlPatterns, function(pattern) {
+      var match, i, url;
+
+      if ((match = pattern.regex.exec(data.source1))) {
+        url = pattern.url;
+
+        for (i = 0; match[i]; i++) {
+          /*jshint loopfunc:true*/
+          /*eslint no-loop-func:0 */
+          url = url.replace('$' + i, function() {
+            return match[i];
+          });
+        }
+
+        data.source1 = url;
+        data.type = pattern.type;
+        data.width = data.width || pattern.w;
+        data.height = data.height || pattern.h;
+      }
+    });
+
+    if (data.embed) {
+      html = updateHtml(data.embed, data, true);
+    } else {
+      var videoScript = getVideoScriptMatch(data.source1);
+      if (videoScript) {
+        data.type = 'script';
+        data.width = videoScript.width;
+        data.height = videoScript.height;
+      }
+
+      data.width = data.width || 300;
+      data.height = data.height || 150;
+
+      tinymce.each(data, function(value, key) {
+        data[key] = editor.dom.encode(value);
+      });
+
+      if (data.type == "iframe") {
+        html += '<iframe src="' + data.source1 + '" width="' + data.width + '" height="' + data.height + '"></iframe>';
+      } else if (data.source1mime == "application/x-shockwave-flash") {
+        html += '<object data="' + data.source1 + '" width="' + data.width + '" height="' + data.height + '" type="application/x-shockwave-flash">';
+
+        if (data.poster) {
+          html += '<img src="' + data.poster + '" width="' + data.width + '" height="' + data.height + '" />';
+        }
+
+        html += '</object>';
+      } else if (data.source1mime.indexOf('audio') != -1) {
+        if (editor.settings.audio_template_callback) {
+          html = editor.settings.audio_template_callback(data);
+        } else {
+          html += (
+            '<audio controls="controls" src="' + data.source1 + '">' +
+              (data.source2 ? '\n<source src="' + data.source2 + '"' + (data.source2mime ? ' type="' + data.source2mime + '"' : '') + ' />\n' : '') +
+            '</audio>'
+          );
+        }
+      } else if (data.type == "script") {
+        html += '<script src="' + data.source1 + '"></script>';
+      } else {
+        if (editor.settings.video_template_callback) {
+          html = editor.settings.video_template_callback(data);
+        } else {
+          html = (
+            '<video width="' + data.width + '" height="' + data.height + '"' + (data.poster ? ' poster="' + data.poster + '"' : '') + ' controls="controls">\n' +
+              '<source src="' + data.source1 + '"' + (data.source1mime ? ' type="' + data.source1mime + '"' : '') + ' />\n' +
+              (data.source2 ? '<source src="' + data.source2 + '"' + (data.source2mime ? ' type="' + data.source2mime + '"' : '') + ' />\n' : '') +
+            '</video>'
+          );
+        }
+      }
+    }
+
+    return html;
+  }
+
+  function htmlToData(html) {
+    var data = {};
+
+    new tinymce.html.SaxParser({
+      validate: false,
+      allow_conditional_comments: true,
+      special: 'script,noscript',
+      start: function(name, attrs) {
+        if (!data.source1 && name == "param") {
+          data.source1 = attrs.map.movie;
+        }
+
+        if (name == "iframe" || name == "object" || name == "embed" || name == "video" || name == "audio") {
+          if (!data.type) {
+            data.type = name;
+          }
+
+          data = tinymce.extend(attrs.map, data);
+        }
+
+        if (name == "script") {
+          var videoScript = getVideoScriptMatch(attrs.map.src);
+          if (!videoScript) {
+            return;
+          }
+
+          data = {
+            type: "script",
+            source1: attrs.map.src,
+            width: videoScript.width,
+            height: videoScript.height
+          };
+        }
+
+        if (name == "source") {
+          if (!data.source1) {
+            data.source1 = attrs.map.src;
+          } else if (!data.source2) {
+            data.source2 = attrs.map.src;
+          }
+        }
+
+        if (name == "img" && !data.poster) {
+          data.poster = attrs.map.src;
+        }
+      }
+    }).parse(html);
+
+    data.source1 = data.source1 || data.src || data.data;
+    data.source2 = data.source2 || '';
+    data.poster = data.poster || '';
+
+    return data;
+  }
+
+  function getData(element) {
+    if (element.getAttribute('data-mce-object')) {
+      return htmlToData(editor.serializer.serialize(element, {selection: true}));
+    }
+
+    return {};
+  }
+
+  function updateHtml(html, data, updateAll) {
+    var writer = new tinymce.html.Writer();
+    var sourceCount = 0, hasImage;
+
+    function setAttributes(attrs, updatedAttrs) {
+      var name, i, value, attr;
+
+      for (name in updatedAttrs) {
+        value = "" + updatedAttrs[name];
+
+        if (attrs.map[name]) {
+          i = attrs.length;
+          while (i--) {
+            attr = attrs[i];
+
+            if (attr.name == name) {
+              if (value) {
+                attrs.map[name] = value;
+                attr.value = value;
+              } else {
+                delete attrs.map[name];
+                attrs.splice(i, 1);
+              }
+            }
+          }
+        } else if (value) {
+          attrs.push({
+            name: name,
+            value: value
+          });
+
+          attrs.map[name] = value;
+        }
+      }
+    }
+
+    new tinymce.html.SaxParser({
+      validate: false,
+      allow_conditional_comments: true,
+      special: 'script,noscript',
+
+      comment: function(text) {
+        writer.comment(text);
+      },
+
+      cdata: function(text) {
+        writer.cdata(text);
+      },
+
+      text: function(text, raw) {
+        writer.text(text, raw);
+      },
+
+      start: function(name, attrs, empty) {
+        switch (name) {
+          case "video":
+          case "object":
+          case "embed":
+          case "img":
+          case "iframe":
+            setAttributes(attrs, {
+              width: data.width,
+              height: data.height
+            });
+          break;
+        }
+
+        if (updateAll) {
+          switch (name) {
+            case "video":
+              setAttributes(attrs, {
+                poster: data.poster,
+                src: ""
+              });
+
+              if (data.source2) {
+                setAttributes(attrs, {
+                  src: ""
+                });
+              }
+            break;
+
+            case "iframe":
+              setAttributes(attrs, {
+                src: data.source1
+              });
+            break;
+
+            case "source":
+              sourceCount++;
+
+              if (sourceCount <= 2) {
+                setAttributes(attrs, {
+                  src: data["source" + sourceCount],
+                  type: data["source" + sourceCount + "mime"]
+                });
+
+                if (!data["source" + sourceCount]) {
+                  return;
+                }
+              }
+            break;
+
+            case "img":
+              if (!data.poster) {
+                return;
+              }
+
+              hasImage = true;
+              break;
+          }
+        }
+
+        writer.start(name, attrs, empty);
+      },
+
+      end: function(name) {
+        if (name == "video" && updateAll) {
+          for (var index = 1; index <= 2; index++) {
+            if (data["source" + index]) {
+              var attrs = [];
+              attrs.map = {};
+
+              if (sourceCount < index) {
+                setAttributes(attrs, {
+                  src: data["source" + index],
+                  type: data["source" + index + "mime"]
+                });
+
+                writer.start("source", attrs, true);
+              }
+            }
+          }
+        }
+
+        if (data.poster && name == "object" && updateAll && !hasImage) {
+          var imgAttrs = [];
+          imgAttrs.map = {};
+
+          setAttributes(imgAttrs, {
+            src: data.poster,
+            width: data.width,
+            height: data.height
+          });
+
+          writer.start("img", imgAttrs, true);
+        }
+
+        writer.end(name);
+      }
+    }, new tinymce.html.Schema({})).parse(html);
+
+    return writer.getContent();
+  }
+
+  editor.on('ResolveName', function(e) {
+    var name;
+
+    if (e.target.nodeType == 1 && (name = e.target.getAttribute("data-mce-object"))) {
+      e.name = name;
+    }
+  });
+
+  editor.on('preInit', function() {
+    // Make sure that any messy HTML is retained inside these
+    var specialElements = editor.schema.getSpecialElements();
+    tinymce.each('video audio iframe object'.split(' '), function(name) {
+      specialElements[name] = new RegExp('<\/' + name + '[^>]*>','gi');
+    });
+
+    // Allow elements
+    //editor.schema.addValidElements('object[id|style|width|height|classid|codebase|*],embed[id|style|width|height|type|src|*],video[*],audio[*]');
+
+    // Set allowFullscreen attribs as boolean
+    var boolAttrs = editor.schema.getBoolAttrs();
+    tinymce.each('webkitallowfullscreen mozallowfullscreen allowfullscreen'.split(' '), function(name) {
+      boolAttrs[name] = {};
+    });
+
+    // Converts iframe, video etc into placeholder images
+    editor.parser.addNodeFilter('iframe,video,audio,object,embed,script', function(nodes, name) {
+      var i = nodes.length, ai, node, placeHolder, attrName, attrValue, attribs, innerHtml;
+      var videoScript;
+
+      while (i--) {
+        node = nodes[i];
+        if (!node.parent) {
+          continue;
+        }
+
+        if (node.name == 'script') {
+          videoScript = getVideoScriptMatch(node.attr('src'));
+          if (!videoScript) {
+            continue;
+          }
+        }
+
+        placeHolder = new tinymce.html.Node('img', 1);
+        placeHolder.shortEnded = true;
+
+        if (videoScript) {
+          if (videoScript.width) {
+            node.attr('width', videoScript.width.toString());
+          }
+
+          if (videoScript.height) {
+            node.attr('height', videoScript.height.toString());
+          }
+        }
+
+        // Prefix all attributes except width, height and style since we
+        // will add these to the placeholder
+        attribs = node.attributes;
+        ai = attribs.length;
+        while (ai--) {
+          attrName = attribs[ai].name;
+          attrValue = attribs[ai].value;
+
+          if (attrName !== "width" && attrName !== "height" && attrName !== "style") {
+            if (attrName == "data" || attrName == "src") {
+              attrValue = editor.convertURL(attrValue, attrName);
+            }
+
+            placeHolder.attr('data-mce-p-' + attrName, attrValue);
+          }
+        }
+
+        // Place the inner HTML contents inside an escaped attribute
+        // This enables us to copy/paste the fake object
+        innerHtml = node.firstChild && node.firstChild.value;
+        if (innerHtml) {
+          placeHolder.attr("data-mce-html", escape(innerHtml));
+          placeHolder.firstChild = null;
+        }
+
+        placeHolder.attr({
+          width: node.attr('width') || "300",
+          height: node.attr('height') || (name == "audio" ? "30" : "150"),
+          style: node.attr('style'),
+          src: tinymce.Env.transparentSrc,
+          "data-mce-object": name,
+          "class": "mce-object mce-object-" + name
+        });
+
+        node.replace(placeHolder);
+      }
+    });
+
+    // Replaces placeholder images with real elements for video, object, iframe etc
+    editor.serializer.addAttributeFilter('data-mce-object', function(nodes, name) {
+      var i = nodes.length, node, realElm, ai, attribs, innerHtml, innerNode, realElmName;
+
+      while (i--) {
+        node = nodes[i];
+        if (!node.parent) {
+          continue;
+        }
+
+        realElmName = node.attr(name);
+        realElm = new tinymce.html.Node(realElmName, 1);
+
+        // Add width/height to everything but audio
+        if (realElmName != "audio" && realElmName != "script") {
+          realElm.attr({
+            width: node.attr('width'),
+            height: node.attr('height')
+          });
+        }
+
+        realElm.attr({
+          style: node.attr('style')
+        });
+
+        // Unprefix all placeholder attributes
+        attribs = node.attributes;
+        ai = attribs.length;
+        while (ai--) {
+          var attrName = attribs[ai].name;
+
+          if (attrName.indexOf('data-mce-p-') === 0) {
+            realElm.attr(attrName.substr(11), attribs[ai].value);
+          }
+        }
+
+        if (realElmName == "script") {
+          realElm.attr('type', 'text/javascript');
+        }
+
+        // Inject innerhtml
+        innerHtml = node.attr('data-mce-html');
+        if (innerHtml) {
+          innerNode = new tinymce.html.Node('#text', 3);
+          innerNode.raw = true;
+          innerNode.value = unescape(innerHtml);
+          realElm.append(innerNode);
+        }
+
+        node.replace(realElm);
+      }
+    });
+  });
+
+  editor.on('ObjectSelected', function(e) {
+    var objectType = e.target.getAttribute('data-mce-object');
+
+    if (objectType == "audio" || objectType == "script") {
+      e.preventDefault();
+    }
+  });
+
+  editor.on('objectResized', function(e) {
+    var target = e.target, html;
+
+    if (target.getAttribute('data-mce-object')) {
+      html = target.getAttribute('data-mce-html');
+      if (html) {
+        html = unescape(html);
+        target.setAttribute('data-mce-html', escape(
+          updateHtml(html, {
+            width: e.width,
+            height: e.height
+          })
+        ));
+      }
+    }
+  });
+
+  editor.addButton('media', {
+    tooltip: 'Insert/edit video',
+    onclick: showDialog,
+    stateSelector: ['img[data-mce-object=video]', 'img[data-mce-object=iframe]']
+  });
+
+  editor.addMenuItem('media', {
+    icon: 'media',
+    text: 'Insert video',
+    onclick: showDialog,
+    context: 'insert',
+    prependToContext: true
+  });
+});
