@@ -63,7 +63,7 @@ tinymce.PluginManager.add('media', function(editor, url) {
   function showDialog() {
     var win, width, height, data;
     var generalFormItems = [
-      {name: 'source1', type: 'filepicker', filetype: 'media', size: 40, autofocus: true, label: 'Source'}
+      {name: 'source1', type: 'filepicker', filetype: 'media', size: 40, autofocus: true, label: 'Source', minWidth: 300}
     ];
 
     function recalcSize(e) {
@@ -241,7 +241,7 @@ tinymce.PluginManager.add('media', function(editor, url) {
       });
 
       if (data.type == "iframe") {
-        html += '<iframe src="' + data.source1 + '" width="' + data.width + '" height="' + data.height + '"></iframe>';
+        html += '<div class="embed video-embed"><iframe src="' + data.source1 + '" width="' + data.width + '" height="' + data.height + '"></iframe></div>';
       } else if (data.source1mime == "application/x-shockwave-flash") {
         html += '<object data="' + data.source1 + '" width="' + data.width + '" height="' + data.height + '" type="application/x-shockwave-flash">';
 
