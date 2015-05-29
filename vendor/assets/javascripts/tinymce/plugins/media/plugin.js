@@ -241,7 +241,7 @@ tinymce.PluginManager.add('media', function(editor, url) {
       });
 
       if (data.type == "iframe") {
-        html += '<div class="embed video-embed"><iframe src="' + data.source1 + '" width="' + data.width + '" height="' + data.height + '"></iframe></div>';
+        html += '<iframe class="tinymce-video-embed" src="' + data.source1 + '" width="' + data.width + '" height="' + data.height + '"></iframe>';
       } else if (data.source1mime == "application/x-shockwave-flash") {
         html += '<object data="' + data.source1 + '" width="' + data.width + '" height="' + data.height + '" type="application/x-shockwave-flash">';
 
