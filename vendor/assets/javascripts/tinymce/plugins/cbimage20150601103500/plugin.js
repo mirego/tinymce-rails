@@ -11,7 +11,7 @@
 /*global tinymce:true */
 
 
-tinymce.PluginManager.add('cbimage20140616103500', function (editor) {
+tinymce.PluginManager.add('cbimage20150601103500', function (editor) {
     function showDialog(ui, value) {
         var win;
 
@@ -64,7 +64,7 @@ tinymce.PluginManager.add('cbimage20140616103500', function (editor) {
             dataType: 'json',
             url: editor.settings.uploadimage_form_url,
             formData: {
-                authenticity_token: $('meta[name="csrf-token"]').attr('content')
+                authenticity_token: $.cookie('XSRF-TOKEN')
             },
             previewMaxHeight: 140,
             previewMaxWidth: 350,
