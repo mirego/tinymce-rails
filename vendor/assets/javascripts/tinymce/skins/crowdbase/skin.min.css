@@ -572,9 +572,6 @@ body .mce-abs-layout-item, .mce-abs-end {
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff2f2f2', endColorstr='#ffcccccc', GradientType=0);
     zoom: 1;
     */
-    border-color: #ccc #ccc #a6a6a6;
-    
-    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);*/
 }
 .mce-btn.mce-disabled, .mce-btn.mce-disabled:hover {
     cursor: default;
