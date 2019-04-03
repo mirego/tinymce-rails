@@ -11,7 +11,7 @@
 /*global tinymce:true */
 
 
-tinymce.PluginManager.add('cbimage20150601103500', function (editor) {
+tinymce.PluginManager.add('cbimage20190403103500', function (editor) {
     function showDialog(ui, value) {
         var win;
 
@@ -54,12 +54,6 @@ tinymce.PluginManager.add('cbimage20150601103500', function (editor) {
             '<div class="fileupload-error" style="display:none"></div>' +
             '</div>');
 
-        // Unhide the input type file if on IE <= 9
-        if ($.browser.msie && $.browser.version <= 9) {
-            $fileuploadContainer.find("input[type=file]").removeClass("hidden");
-            $fileuploadContainer.find('.fileupload-uploadzone').hide();
-        }
-
         $fileuploadContainer.fileupload({
             dataType: 'json',
             url: editor.settings.uploadimage_form_url,
@@ -74,9 +68,7 @@ tinymce.PluginManager.add('cbimage20150601103500', function (editor) {
             dropZone: $fileuploadContainer.find('.fileupload-uploadzone'),
             add: function (e, data) {
                 $fileuploadContainer.find(".fileupload-uploadzone").hide();
-                if (!($.browser.msie && $.browser.version <= 9)) {
-                    $fileuploadContainer.find('.fileupload-changefile').show();
-                }
+                $fileuploadContainer.find('.fileupload-changefile').show();
 
                 $fileuploadContainer.unbind("startUpload");
 
@@ -85,13 +77,7 @@ tinymce.PluginManager.add('cbimage20150601103500', function (editor) {
                     options = that.options,
                     files = data.files;
                 $(this).fileupload('process', data).done(function () {
-                    // that._adjustMaxNumberOfFiles(-files.length);
-                    // data.maxNumberOfFilesAdjusted = true;
-                    // data.files.valid = data.isValidated = that._validate(files);
-
-                    if (!($.browser.msie && $.browser.version <= 9)) {
-                        $fileuploadContainer.find(".files").empty();
-                    }
+                    $fileuploadContainer.find(".files").empty();
 
                     data.context = that._renderUpload(files).data('data', data);
                     options.filesContainer[
@@ -143,18 +129,14 @@ tinymce.PluginManager.add('cbimage20150601103500', function (editor) {
                     $fileuploadContainer.find('.fileupload-error').text(data.result.error.message).show();
                     $fileuploadContainer.find('.fileupload-preview, .fileupload-changefile, .progress').hide();
                     $fileuploadContainer.find('.bar').css('width', 0);
-                    if (!($.browser.msie && $.browser.version <= 9)) {
-                        $fileuploadContainer.find('.fileupload-uploadzone').show();
-                    }
+                    $fileuploadContainer.find('.fileupload-uploadzone').show();
                 }
             },
             fail: function (e, data) {
                 $fileuploadContainer.find('.fileupload-error').text(editor.editorManager.translate('An error occurred while uploading the image.')).show();
                 $fileuploadContainer.find('.fileupload-preview, .fileupload-changefile, .progress').hide();
                 $fileuploadContainer.find('.bar').css('width', 0);
-                if (!($.browser.msie && $.browser.version <= 9)) {
-                    $fileuploadContainer.find('.fileupload-uploadzone').show();
-                }
+                $fileuploadContainer.find('.fileupload-uploadzone').show();
             },
             previewdone: function(e, data) {
                 var $preview = $fileuploadContainer.find(".preview");
@@ -165,14 +147,12 @@ tinymce.PluginManager.add('cbimage20150601103500', function (editor) {
             }
         });
 
-        if (!($.browser.msie && $.browser.version <= 9)) {
-            $fileuploadContainer.find(".fileupload-uploadzone, .fileupload-changefile").click(function (e) {
-                $fileuploadContainer.find('.fileupload-error').hide();
-                $fileuploadContainer.find(":file").click();
-                e.preventDefault();
-                return false;
-            });
-        }
+        $fileuploadContainer.find(".fileupload-uploadzone, .fileupload-changefile").click(function (e) {
+            $fileuploadContainer.find('.fileupload-error').hide();
+            $fileuploadContainer.find(":file").click();
+            e.preventDefault();
+            return false;
+        });
 
         if (value && value.files && value.files.length > 0) {
             $fileuploadContainer.fileupload('add', {files: value.files});
